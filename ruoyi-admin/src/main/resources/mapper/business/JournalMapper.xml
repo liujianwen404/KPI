@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.JournalMapper">
+    <resultMap type="com.ruoyi.business.domain.Journal" id="JournalResult">
+        <id property="id" column="id"/>
+            <result property="date" column="date"/>
+            <result property="zentaoId" column="zentao_id"/>
+            <result property="zentaoName" column="zentao_name"/>
+            <result property="taskProgress" column="task_progress"/>
+            <result property="userId" column="user_id"/>
+            <result property="userName" column="user_name"/>
+            <result property="deptId" column="dept_id"/>
+            <result property="deptName" column="dept_name"/>
+            <result property="postId" column="post_id"/>
+            <result property="postName" column="post_name"/>
+            <result property="createId" column="create_id"/>
+            <result property="createBy" column="create_by"/>
+            <result property="createTime" column="create_time"/>
+            <result property="updateId" column="update_id"/>
+            <result property="updateBy" column="update_by"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="delFlag" column="del_flag"/>
+            <result property="remark" column="remark"/>
+    </resultMap>
+    <sql id="baseColumns">
+            entity.id,
+            entity.date,
+            entity.zentao_id,
+            entity.zentao_name,
+            entity.task_progress,
+            entity.user_id,
+            entity.user_name,
+            entity.dept_id,
+            entity.dept_name,
+            entity.post_id,
+            entity.post_name,
+            entity.create_id,
+            entity.create_by,
+            entity.create_time,
+            entity.update_id,
+            entity.update_by,
+            entity.update_time,
+            entity.del_flag,
+            entity.remark
+        </sql>
+
+    <select id="selectJournalList" parameterType="com.ruoyi.business.domain.Journal" resultMap="JournalResult">
+        select <include refid="baseColumns"/> from t_business_journal entity
+        where  entity.del_flag = '0'
+            <if test="params.beginDate != null and params.beginDate != ''">
+                <![CDATA[and entity.date >= '${params.beginDate}']]>
+            </if>
+            <if test="params.endDate != null and params.endDate != ''">
+                <![CDATA[and entity.date < DATE_ADD('${params.endDate}',INTERVAL 1 DAY)]]>
+            </if>
+            <if test="date != null "> and entity.date = #{date}</if>
+            <if test="zentaoId != null "> and entity.zentao_id = #{zentaoId}</if>
+            <if test="zentaoName != null  and zentaoName != ''"> and entity.zentao_name like concat('%', #{zentaoName}, '%')</if>
+            <if test="taskProgress != null  and taskProgress != ''"> and entity.task_progress = #{taskProgress}</if>
+            <if test="userId != null "> and entity.user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and entity.user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and entity.dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and entity.dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="postId != null "> and entity.post_id = #{postId}</if>
+            <if test="postName != null  and postName != ''"> and entity.post_name like concat('%', #{postName}, '%')</if>
+            <if test="createId != null "> and entity.create_id = #{createId}</if>
+            <if test="updateId != null "> and entity.update_id = #{updateId}</if>
+          <if test="delFlag != null  and delFlag != ''"> and entity.del_flag = #{delFlag} </if>
+
+    </select>
+
+
+    <update id="deleteJournalById" parameterType="Long">
+        update  t_business_journal set del_flag =  '1' where id = #{id}
+    </update>
+
+    <update id="deleteJournalByIds" parameterType="String">
+        update  t_business_journal set del_flag =  '1' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

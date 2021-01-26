@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>统计</title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+	<link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
+	<link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet" />
+	<link href="../static/js/fullcalendar/fullcalendar.min.css" th:href="@{/js/fullcalendar/fullcalendar.min.css}" rel="stylesheet" />
+	<style>
+	#calendar {
+		max-width: 80%;
+		margin: 0 auto;
+	}
+</style>
+</head>
+
+<body>
+	<br>
+	<div id='calendar'></div>
+	<th:block th:include="include :: footer" />
+	<script th:src="@{/js/fullcalendar/fullcalendar.min.js}"></script>
+	<script th:src="@{/js/fullcalendar/locales/zh-cn.js}"></script>
+
+</body>
+</html>
+<script type="text/javascript">
+
+	$(document).ready(function () {
+		var calendarEl = document.getElementById('calendar');
+
+		var calendar = new FullCalendar.Calendar(calendarEl, {
+			headerToolbar: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+			},
+			initialDate: new Date(),
+			editable: true,
+			navLinks: true, // can click day/week names to navigate views
+			dayMaxEvents: true, // allow "more" link when too many events
+			locale:'zh-cn',
+			events: zantaoEvent,
+			eventClick: zantaoEventClick,
+			selectable: true,
+			select: zantaoEventSelect
+		/*events: {
+          //url: 'php/get-events.php',
+          failure: function() {
+            //document.getElementById('script-warning').style.display = 'block'
+          }
+        },
+        loading: function(bool) {
+          //document.getElementById('loading').style.display =
+          //  bool ? 'block' : 'none';
+        }*/
+	});
+
+		calendar.render();
+
+		cal = calendar;//用于刷新数据
+
+		//  calendar.refetchEvents();//重新抓取所有事件，刷新
+
+
+		$('#calendar .fc-prev-button').click(function(){
+			console.log('上一页');
+		});
+
+		$('#calendar .fc-next-button').click(function(){
+			console.log('下一页');
+		});
+
+		$('#calendar .fc-today-button').click(function(){
+			console.log('当前页');
+		});
+
+		//刷新日历
+		function refreshEvent() {
+			cal.refetchEvents();
+		}
+
+	});
+
+	//加载日历数据
+	function zantaoEvent(info, successCallback, failureCallback){
+		// var zandaoObj = {
+		// 	id:'01',
+		// 	title:'[10%]测试任务001',
+		// 	start:'2021-01-01',//开始时间
+		// 	end:'2021-01-04',//结束时间
+		// 	color: 'green',//事件颜色
+		// 	textColor:'red',//标题颜色
+		// 	description: '<b>AAA</b>ccccc',
+		// 	editable:false//是否可拖动
+		// };
+		// data.push(zandaoObj);
+		// data.push({title:'测试任务002', start:'2020-12-08', end:'2020-12-12'});
+		// data.push({title:'测试任务003', start:'2020-12-24', end:'2020-12-26'});
+		// data.push({title:'测试任务004', start:'2020-12-24', end:'2020-12-24'});
+		// data.push({title:'测试任务005', start:'2020-12-24', end:'2020-12-24'});
+		// data.push({title:'测试任务006', start:'2020-12-24', end:'2020-12-24'});
+		// data.push({title:'测试任务007', start:'2020-12-24', end:'2020-12-24'});
+		// data.push({title:'测试任务008', start:'2020-12-24', end:'2020-12-24'});
+		// data.push({title:'测试任务009', start:'2020-12-24', end:'2020-12-24'});
+		// data.push({title:'测试任务010', start:'2020-12-24', end:'2020-12-24'});
+		// successCallback(data);
+		var url = "/zentao/task/userTask"
+		$.get(url, function(result) {
+			if (result.code == 0) {
+				var data = [];
+				console.log(result)
+				var zandaoData = result.data;
+				$.each(zandaoData,function (k,v) {
+					var obj = {};
+					obj.title = v.taskId + ':' + v.taskName;
+					obj.start = v.openedDate;
+					obj.end = v.deadline;
+					obj.id = v.taskId;
+					data.push(obj)
+				});
+				successCallback(data);
+			} else {
+				$.modal.alertError(result.msg);
+			}
+		});
+	}
+
+	function zantaoEventClick(calEvent, jsEvent) {
+		var taskId = calEvent.event.id;
+		var title = calEvent.event.title;
+		console.log('event, id:%s, title: %s, start: %s, end: %s' , calEvent.event.id, calEvent.event.title, calEvent.event.start, calEvent.event.end);
+		// 弹出窗体 title 标题 url 请求链接 width 宽度 height 高度 callback 回调函数
+		var url = "/business/journal/addOrEdit?taskId=" + taskId + "&title=" + title
+		$.modal.open("任务进度", url, 600, 800);
+	}
+
+	function zantaoEventSelect(arg) {
+		var date = dateFormat(arg.start);
+		console.log('select, start:%s, end: %s' , arg.start, arg.end);
+		// var url = "/business/journal?date=" + date + "&type=main"
+		var url = "/business/journal/add?date=" + date + "&type=main"
+		$.modal.open("工作日报", url);
+	}
+
+	function dateFormat(d){
+		var year = d.getFullYear();
+		var month = d.getMonth() + 1;
+		var date = d.getDate();
+		datetime = year + '-' + (month > 9?(month + "") : ("0" + month))+ '-' + (date>9?(date + "") : ("0" + date));
+		return datetime;
+	}
+
+</script>

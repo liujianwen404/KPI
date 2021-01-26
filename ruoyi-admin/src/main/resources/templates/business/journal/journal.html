@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('员工日报列表')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <input type="hidden" name="date" th:value="${date}">
+                            <input type="hidden" name="type" th:value="${type}">
+
+                            <li th:if="${type} != 'main'" class="select-time">
+                                <label>日期：</label>
+                                <input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginDate]"/>
+                                <span>-</span>
+                                <input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endDate]"/>
+                            </li>
+                            <li>
+                                <label>任务名称：</label>
+                                <input type="text" name="zentaoName"/>
+                            </li>
+                            <li>
+                                <label>员工名称：</label>
+                                <input type="text" name="userName"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:journal:add">
+                    <i class="fa fa-plus"></i> 添加工作日报
+                </a>
+<!--                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:journal:export">-->
+<!--                    <i class="fa fa-download"></i> 导出日报-->
+<!--                </a>-->
+                <a class="btn btn-warning" onclick="exportUserExcel()" shiro:hasPermission="business:journal:export">
+                    <i class="fa fa-download"></i> 员工周报
+                </a>
+                <a class="btn btn-warning" onclick="exportLeaderExcel()" shiro:hasPermission="business:journal:export">
+                    <i class="fa fa-download"></i> 组长周报
+                </a>
+                <a class="btn btn-warning" onclick="exportDeptExcel()" shiro:hasPermission="business:journal:export">
+                    <i class="fa fa-download"></i> 部门周报
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table class="my-bootstrap-table" id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+     <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:journal:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:journal:remove')}]];
+        var prefix = ctx + "business/journal";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add?date="+[[${date}]] + "&type=" + [[${type}]],
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "员工日报",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'id',
+                        title: '主键ID',
+                        visible: false
+                    },
+                    {
+                        field: 'userId',
+                        title: '员工id',
+                        visible: false
+                    },
+                    {
+                        field: 'userName',
+                        title: '员工'
+                    },
+                    {
+                        field: 'deptId',
+                        title: '部门id',
+                        visible: false
+                    },
+                    {
+                        field: 'deptName',
+                        title: '部门'
+                    },
+                    {
+                        field: 'postId',
+                        title: '岗位id',
+                        visible: false
+                    },
+                    {
+                        field: 'postName',
+                        title: '岗位',
+                        visible: false
+                    },
+                    {
+                        field: 'date',
+                        title: '日期',
+                        formatter: function(value, row, index){
+                            if(value != null && value !=''){
+                                return value.toString().substring(0,10);
+                            }
+                        }
+                    },
+                    {
+                        field: 'zentaoId',
+                        title: '禅道任务ID',
+                        visible: false
+                    },
+                    {
+                        field: 'zentaoName',
+                        title: '禅道任务名称'
+                    },
+                    {
+                        field: 'taskProgress',
+                        title: '任务进度',
+                        formatter: function(value, row, index){
+                            if(value != null && value !=''){
+                                return value + "%";
+                            }
+                        }
+                    },
+                    {
+                        field: 'createId',
+                        title: '创建者id',
+                        visible: false
+                    },
+                    {
+                        field: 'updateId',
+                        title: '更新者id',
+                        visible: false
+                    },
+                    {
+                        field: 'remark',
+                        title: '备注',
+                        visible: false
+                    }]
+            };
+            $.table.init(options);
+        });
+
+        function exportUserExcel(){
+            var $startTime = $("#startTime").val();
+            var $endTime = $("#endTime").val();
+            if ($startTime == null || $startTime == '' || $endTime == null || $endTime == '') {
+                $.modal.alertWarning("请选择周报开始时间与结束时间！");
+                return;
+            }
+            var url = prefix + "/exportUser";
+            $.modal.loading("正在导出数据，请稍后...");
+            $.post(url, {startTime:$startTime,endTime:$endTime}, function(result) {
+                if (result.code == web_status.SUCCESS) {
+                    window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                } else if (result.code == web_status.WARNING) {
+                    $.modal.alertWarning(result.msg)
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            });
+        }
+
+    </script>
+</body>
+</html>

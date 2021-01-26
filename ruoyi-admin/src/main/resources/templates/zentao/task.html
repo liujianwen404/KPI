@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('任务清单')" />
+</head>
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="role-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								部门：<input type="text" name="params[deptName]" maxleng="36" />
+							</li>
+							<li>
+								小组：<input type="text" name="params[groupName]" maxleng="36" />
+							</li>
+							<li>
+								时段：<select id="timeRange" name="params[timeRange]" >
+									<option value="" selected>自定义</option>
+									<option th:each="timeRange : ${timeRanges}" th:text="${timeRange.name}" th:data-begin="${timeRange.begin}" th:data-end="${timeRange.end}"></option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间： </label>
+								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginDate]" th:value="${beginDate}" />
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endDate]" th:value="${endDate}"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+		
+			<div class="btn-group-sm" id="toolbar" role="group">
+		        <a class="btn btn-warning" onclick="$.table.exportExcel()" >
+		            <i class="fa fa-download"></i> 导出
+		        </a>
+	        </div>
+	        
+	        <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+		var prefix = ctx + "zentao/task";
+		
+		$(function() {
+		    var options = {
+		        url: prefix + "/list",
+		        exportUrl: prefix + "/export",
+		        modalName: "任务清单",
+		        columns: [
+			        {field: 'taskName', title: '任务'},
+			        {field: 'deptName', title: '部门'},
+			        {field: 'groupName', title: '小组' },
+			        {field: 'staffName', title: '姓名'},
+			        {field: 'estimate',  title: '预计工时(小时)'},
+			        {field: 'consumed',  title: '实际工时(小时)'},
+			        {field: 'status',  title: '任务状态'},
+			        {field: 'deadline',  title: '截止日期'},
+			        {field: 'openedDate',  title: '指派日期'},
+			        {field: 'finishedDate',  title: '完成日期'}
+		        ]
+		    };
+		    $.table.init(options);
+
+		    var $startTime = $('#startTime');
+		    var $endTime = $('#endTime');
+		    
+		    $('#timeRange').change(function(){
+		    	var opt = $(this).find('option:selected');
+		    	var begin = opt.data('begin');
+		    	if(begin!=null && begin!=''){
+		    		$startTime.val(begin);
+		    	}
+		    	var end = opt.data('end');
+		    	if(end!=null && end!=''){
+		    		$endTime.val(end);
+		    	}
+		    	
+		    });
+		    
+		    var header = {};
+		    options.columns.filter(i=> i.field!=null && i.field!='' && i.title!=null && i.title!='')
+		    	.forEach(i=> header[i.field] = i.title);
+		    $('<input name="header" type="hidden" />').eq(0).val(JSON.stringify(header)).appendTo('#role-form');
+		});
+		
+	</script>
+</body>
+</html>

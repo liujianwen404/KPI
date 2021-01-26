@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增或修改工作日报')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-journal-add-edit">
+
+            <div class="form-group">    
+                <!--<label class="col-sm-3 control-label">禅道任务ID：</label>-->
+                <div class="col-sm-8">
+                    <input name="zentaoId" class="form-control" type="hidden" th:value="${taskId}">
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">禅道任务名称：</label>
+                    <div class="col-sm-8">
+                        <input name="zentaoName" class="form-control" type="text" th:value="${zentaoName}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12">
+                <div id="addBody" class="col-sm-12">
+                    <div th:each="task,stat: ${tasks}" class="cy-list-content" th:id="'body['+${stat.count}+']'">
+                        <input name="count" th:value="${stat.size}" class="form-control" type="hidden">
+                        <input name="oldSize" th:value="${stat.size}" class="form-control" type="hidden">
+                        <input th:attr="name='task'+${stat.count}" th:value="${task.id}" type="hidden">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">(<span th:text="${stat.count}"></span>)</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label is-required">日期：</label>
+                            <div class="col-sm-8">
+                                <div class="input-group date">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input th:id="'date'+${stat.count}" th:attr="name='date'+${stat.count},class='form-control calcTotalSecondInput'+${stat.count}" th:value="${#dates.format(task.date, 'yyyy-MM-dd')}" readonly="readonly" placeholder="yyyy-MM-dd" type="text" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label is-required">任务进度(百分比)：</label>
+                            <div class="col-sm-8">
+                                <input th:attr="name='taskProgress'+${stat.count}" class="form-control" type="number" th:value="${task.taskProgress}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-8 control-label"></label>
+                            <div class="col-sm-3">
+                                <a class="btn btn-danger" th:attr="onclick='delBody(&quot;body['+${stat.count}+']&quot;,'+${stat.count}+')'"><i class="fa fa-remove">删除</i></a>
+                            </div>
+                        </div>
+
+                        <th:block th:include="include :: datetimepicker-css" />
+                        <th:block th:include="include :: footer" />
+                        <th:block th:include="include :: datetimepicker-js" />
+                        <script type="text/javascript">
+                            $(`#date[[${stat.count}]]`).datetimepicker({
+                                format: "yyyy-mm-dd",
+                                minView: 2,//打开时显示的视图。0-'hour' 1-'day' 2-'month' 3-'year' 4-'decade'
+                                autoclose: true
+                            });
+                        </script>
+                    </div>
+                </div>
+
+                <input name="count" class="form-control" type="hidden">
+
+                <a class="btn btn-primary" onclick="addBody()" style="margin-left: 80%">
+                    <i class="fa fa-plus"></i> 增加
+                </a>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <input name="userId" class="form-control" type="hidden" th:value="${userId}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <input name="userName" class="form-control" type="hidden" th:value="${userName}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <input name="deptId" class="form-control" type="hidden" th:value="${deptId}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-8">
+                    <input name="deptName" class="form-control" type="hidden" th:value="${deptName}">
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "business/journal"
+        $("#form-journal-add-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form() && validateAdd()) {
+                $.operate.save(prefix + "/addOrEdit", $('#form-journal-add-edit').serialize());
+            }
+        }
+
+        function validateAdd() {
+            var count = $("input[name=count]").val();
+            if(count == 0){
+                $.modal.alertWarning("请至少填写一段任务进度");
+                return false;
+            }
+            return true;
+        }
+
+        //动态添加表单元素
+        function addBody() {
+            var body = document.getElementById("addBody");
+            //创建div盒子用于包裹
+            var n=$(".cy-list-content").length+1;
+            var oDiv = document.createElement("div");
+            oDiv.setAttribute("class","cy-list-content");
+            oDiv.setAttribute("id","body["+n+"]");
+            oDiv.innerHTML =
+                <!--任务进度标记-->
+                '<div class="form-group col-sm-12">'
+                + '<label class="col-sm-3 control-label">('+n+')</label>'
+                +'</div>'
+                //日期时间input选择器
+                +'<div class="form-group col-sm-12">'
+                + '<label class="col-sm-3 control-label is-required">日期：</label>'
+                + '<div class="col-sm-8">'
+                + '<div class="input-group date">'
+                + '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>'
+                + '<input name="date'+n+'" class="form-control calcTotalSecondInput'+n+'" readonly="readonly" placeholder="yyyy-MM-dd" type="text" required>'
+                + '</div>'
+                + '</div>'
+                +'</div>'
+                //任务进度input
+                +'<div class="form-group col-sm-12">'
+                + '<label class="col-sm-3 control-label is-required">任务进度(百分比)：</label>'
+                + '<div class="col-sm-8">'
+                + '<input name="taskProgress'+n+'" class="form-control" type="number" required>'
+                + '</div>'
+                +'</div>'
+
+                +'<div class="form-group col-sm-12">'
+                + '<label class="col-sm-8 control-label"></label>'
+                + '<div class="col-sm-3">'
+                +'<a class = "btn btn-danger" onclick="delBody(&quot;body['+n+']&quot;,'+n+')">'
+                +'<i class="fa fa-remove">删除</i>'
+                +'</a>'
+                + '</div>'
+                +'</div>'
+            ;
+            body.appendChild(oDiv);
+
+            $("input[name=date"+n+"]").datetimepicker({
+                format: "yyyy-mm-dd",
+                minView: 2,//打开时显示的视图。0-'hour' 1-'day' 2-'month' 3-'year' 4-'decade'
+                autoclose: true
+            });
+
+            //生成的工作经历数量
+            var count=$(".cy-list-content").size();
+            $("input[name = count]").val(count);
+
+        }
+
+        //动态删除表单元素
+        function delBody(id,num) {
+            var taskId = $('input[name=task' + num + ']').val();
+            $.modal.confirm("该操作会永久删除此数据，确认继续？", function() {
+                if(taskId != null && taskId != ''){
+                    $.ajax({
+                        type: 'POST',
+                        url: ctx + "business/journal/remove",
+                        data: {
+                            ids:  taskId
+                        },
+                        dataType: 'json',
+                        success: function (result) {
+                            console.log(result)
+                            if (result.code == 0) {
+                                //删除工作经历代码块
+                                document.getElementById(""+id+"").remove();
+                                //重新计算工作经历数量并赋值
+                                $($(".cy-list-content").toArray()).each(function (index,item) {
+                                    var n = index + 1;
+                                    $(item).attr("id","body["+n+"]");
+                                    $(item).find("div").first("div").find("label").html("任务进度("+n+")");
+                                    $(item).find("div").last("div").find("a").attr("onclick","delBody('body["+n+"]',"+n+")");
+
+                                    $(item).children("input").eq(2).attr("name","task"+n+"");
+                                    $(item).find("div").find("div").children("input").eq(0).attr("name","date"+n+"");
+                                    $(item).find("div").find("div").children("input").eq(1).attr("name","taskProgress"+n+"");
+                                });
+                                //更新数量
+                                var count=$(".cy-list-content").size();
+                                $("input[name = count]").val(count);
+
+                            }
+                        },
+                        error: function (error) {
+                            $.modal.alertWarning("系统错误，请联系管理员");
+                        }
+                    });
+                }else{
+                    //删除工作经历代码块
+                    document.getElementById(""+id+"").remove();
+                    //重新计算工作经历数量并赋值
+                    $($(".cy-list-content").toArray()).each(function (index,item) {
+                        var n = index + 1;
+                        $(item).attr("id","body["+n+"]");
+                        $(item).find("div").first("div").find("label").html("任务进度("+n+")");
+                        $(item).find("div").last("div").find("a").attr("onclick","delBody('body["+n+"]',"+n+")");
+
+                        $(item).children("input").eq(2).attr("name","task"+n+"");
+                        $(item).find("div").find("div").children("input").eq(0).attr("name","date"+n+"");
+                        $(item).find("div").find("div").children("input").eq(1).attr("name","taskProgress"+n+"");
+                    });
+                    //更新工作经历数量
+                    var count=$(".cy-list-content").size();
+                    $("input[name = count]").val(count);
+                }
+            });
+
+        }
+
+    </script>
+</body>
+</html>
