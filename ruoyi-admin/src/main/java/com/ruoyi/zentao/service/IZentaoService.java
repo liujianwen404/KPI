@@ -53,7 +53,19 @@ public interface IZentaoService {
 	 */
 	List<ZentaoDept> findDept(Integer id);
 
+	/**
+	 * 根据条件查询用户所有未完成任务列表
+	 * @param map
+	 * @return
+	 */
 	List<Map> userTaskList(Map<String, String> map);
+
+	/**
+	 * 根据条件查询用户所有未完成需求列表
+	 * @param map
+	 * @return
+	 */
+	List<Map> userRequirementList(Map<String, String> map);
 
 	List<ZentaoDept> deptList();
 }

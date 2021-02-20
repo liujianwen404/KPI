@@ -75,6 +75,12 @@ public class SysUserServiceImpl implements ISysUserService
         return userMapper.selectUserList(user);
     }
 
+    @Override
+    public List<SysUser> selectUserListWithoutDataScope(SysUser user)
+    {
+        return userMapper.selectUserListWithoutDataScope(user);
+    }
+
     /**
      * 根据条件分页查询已分配用户角色列表
      * 
@@ -578,5 +584,17 @@ public class SysUserServiceImpl implements ISysUserService
             }
         }
         return ztrees;
+    }
+
+    /**
+     * 是否是部门负责人
+     * @return
+     */
+    public boolean userIsDeptLeader(Long userId){
+        List<SysDept> deptList = iSysDeptService.selectDeptListWithoutDataScope();
+        if (!deptList.isEmpty()) {
+            return deptList.stream().map(SysDept::getLeader).anyMatch(userId.toString()::equals);
+        }
+        return false;
     }
 }

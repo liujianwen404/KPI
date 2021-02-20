@@ -1,4 +1,4 @@
-package com.ruoyi.business.domain;
+package com.ruoyi.common.business.entity;
 
 import java.util.Date;
 

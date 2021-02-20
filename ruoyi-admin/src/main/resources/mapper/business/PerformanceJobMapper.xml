@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.PerformanceJobMapper">
+    
+    <resultMap type="com.ruoyi.common.business.entity.PerformanceJob" id="PerformanceJobResult">
+        <result property="id"    column="id"    />
+        <result property="date"    column="date"    />
+        <result property="infoCodeStandards"    column="info_code_standards"    />
+        <result property="infoCoordination"    column="info_coordination"    />
+        <result property="infoResponsibility"    column="info_responsibility"    />
+        <result property="opinion"    column="opinion"    />
+        <result property="infoGrade"    column="info_grade"    />
+        <result property="superiorCodeStandards"    column="superior_code_standards"    />
+        <result property="superiorCoordination"    column="superior_coordination"    />
+        <result property="superiorResponsibility"    column="superior_responsibility"    />
+        <result property="superiorGrade"    column="superior_grade"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="postId"    column="post_id"    />
+        <result property="postName"    column="post_name"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectPerformanceJobVo">
+        select id, date, info_code_standards, info_coordination, info_responsibility, opinion, info_grade, superior_code_standards, superior_coordination, superior_responsibility, superior_grade, user_id, user_name, dept_id, dept_name, post_id, post_name, create_id, create_by, create_time, update_id, update_by, update_time, del_flag, remark from t_performance_job
+    </sql>
+
+    <select id="selectPerformanceJobList" parameterType="com.ruoyi.common.business.entity.PerformanceJob" resultMap="PerformanceJobResult">
+        <include refid="selectPerformanceJobVo"/>
+        <where>  
+            <if test="date != null "> and date = #{date}</if>
+            <if test="infoCodeStandards != null "> and info_code_standards = #{infoCodeStandards}</if>
+            <if test="infoCoordination != null "> and info_coordination = #{infoCoordination}</if>
+            <if test="infoResponsibility != null "> and info_responsibility = #{infoResponsibility}</if>
+            <if test="opinion != null  and opinion != ''"> and opinion = #{opinion}</if>
+            <if test="infoGrade != null  and infoGrade != ''"> and info_grade = #{infoGrade}</if>
+            <if test="superiorCodeStandards != null "> and superior_code_standards = #{superiorCodeStandards}</if>
+            <if test="superiorCoordination != null "> and superior_coordination = #{superiorCoordination}</if>
+            <if test="superiorResponsibility != null "> and superior_responsibility = #{superiorResponsibility}</if>
+            <if test="superiorGrade != null "> and superior_grade = #{superiorGrade}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="postName != null  and postName != ''"> and post_name like concat('%', #{postName}, '%')</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+            and del_flag = '0'
+        </where>
+    </select>
+
+    <select id="selectInfoPerformanceJobByCondition" parameterType="com.ruoyi.common.business.entity.PerformanceJob" resultMap="PerformanceJobResult">
+        <include refid="selectPerformanceJobVo"/>
+        <where>
+            <if test="date != null "> and date_format(date,'%Y-%m') = date_format(#{date},'%Y-%m')</if>
+            <if test="infoCodeStandards != null "> and info_code_standards = #{infoCodeStandards}</if>
+            <if test="infoCoordination != null "> and info_coordination = #{infoCoordination}</if>
+            <if test="infoResponsibility != null "> and info_responsibility = #{infoResponsibility}</if>
+            <if test="opinion != null  and opinion != ''"> and opinion = #{opinion}</if>
+            <if test="infoGrade != null  and infoGrade != ''"> and info_grade = #{infoGrade}</if>
+            <if test="superiorCodeStandards != null "> and superior_code_standards = #{superiorCodeStandards}</if>
+            <if test="superiorCoordination != null "> and superior_coordination = #{superiorCoordination}</if>
+            <if test="superiorResponsibility != null "> and superior_responsibility = #{superiorResponsibility}</if>
+            <if test="superiorGrade != null "> and superior_grade = #{superiorGrade}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="postName != null  and postName != ''"> and post_name like concat('%', #{postName}, '%')</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+            and del_flag = '0'
+        </where>
+    </select>
+    
+    <select id="selectPerformanceJobById" parameterType="Long" resultMap="PerformanceJobResult">
+        <include refid="selectPerformanceJobVo"/>
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <select id="selectPreMonth" resultType="int">
+        <![CDATA[
+            select count(*) from t_performance_job
+            where user_id = #{userId} and date_format(date,'%Y-%m') = date_format(#{preMonth},'%Y-%m') and del_flag = '0'
+        ]]>
+    </select>
+        
+    <insert id="insertPerformanceJob" parameterType="com.ruoyi.common.business.entity.PerformanceJob" useGeneratedKeys="true" keyProperty="id">
+        insert into t_performance_job
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="date != null">date,</if>
+            <if test="infoCodeStandards != null">info_code_standards,</if>
+            <if test="infoCoordination != null">info_coordination,</if>
+            <if test="infoResponsibility != null">info_responsibility,</if>
+            <if test="opinion != null">opinion,</if>
+            <if test="infoGrade != null">info_grade,</if>
+            <if test="superiorCodeStandards != null">superior_code_standards,</if>
+            <if test="superiorCoordination != null">superior_coordination,</if>
+            <if test="superiorResponsibility != null">superior_responsibility,</if>
+            <if test="superiorGrade != null">superior_grade,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="postName != null">post_name,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="date != null">#{date},</if>
+            <if test="infoCodeStandards != null">#{infoCodeStandards},</if>
+            <if test="infoCoordination != null">#{infoCoordination},</if>
+            <if test="infoResponsibility != null">#{infoResponsibility},</if>
+            <if test="opinion != null">#{opinion},</if>
+            <if test="infoGrade != null">#{infoGrade},</if>
+            <if test="superiorCodeStandards != null">#{superiorCodeStandards},</if>
+            <if test="superiorCoordination != null">#{superiorCoordination},</if>
+            <if test="superiorResponsibility != null">#{superiorResponsibility},</if>
+            <if test="superiorGrade != null">#{superiorGrade},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="postName != null">#{postName},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePerformanceJob" parameterType="com.ruoyi.common.business.entity.PerformanceJob">
+        update t_performance_job
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="date != null">date = #{date},</if>
+            <if test="infoCodeStandards != null">info_code_standards = #{infoCodeStandards},</if>
+            <if test="infoCoordination != null">info_coordination = #{infoCoordination},</if>
+            <if test="infoResponsibility != null">info_responsibility = #{infoResponsibility},</if>
+            <if test="opinion != null">opinion = #{opinion},</if>
+            <if test="infoGrade != null">info_grade = #{infoGrade},</if>
+            <if test="superiorCodeStandards != null">superior_code_standards = #{superiorCodeStandards},</if>
+            <if test="superiorCoordination != null">superior_coordination = #{superiorCoordination},</if>
+            <if test="superiorResponsibility != null">superior_responsibility = #{superiorResponsibility},</if>
+            <if test="superiorGrade != null">superior_grade = #{superiorGrade},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="postName != null">post_name = #{postName},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePerformanceJobById" parameterType="Long">
+        delete from t_performance_job where id = #{id}
+    </delete>
+
+    <delete id="deletePerformanceJobByIds" parameterType="String">
+        delete from t_performance_job where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

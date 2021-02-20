@@ -236,6 +236,65 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	ORDER BY dept1.id, dept.id, u.id
 	]]>
     </select>
+
+	<!-- 用户需求列表 -->
+	<select id="userRequirementList" parameterType="map" resultType="java.util.HashMap">
+	<![CDATA[
+	select dept1.`name` 'deptName'
+		, dept.`name` 'groupName'
+		, u.realname 'staffName'
+		, t.estimate 'estimate'
+		, t.id 'taskId'
+		, t.name 'taskName'
+		, tet1.consumed 'consumed'
+		, tet1.account 'loginName'
+		, DATE_FORMAT(t.openedDate, '%Y-%m-%d') 'openedDate'
+		, DATE_FORMAT(t.finishedDate, '%Y-%m-%d') 'finishedDate'
+		, DATE_FORMAT(t.deadline, '%Y-%m-%d') 'deadline'
+	from zt_task t
+	INNER JOIN (
+		select tet.account
+			, tet.task
+			, max(tet.left) estimate
+			, SUM(tet.consumed) consumed
+		from zt_taskestimate tet
+		where 1=1
+		]]>
+			<if test="params.beginDate != null and params.beginDate != ''">
+				<![CDATA[and tet.date >= '${params.beginDate}']]>
+		    </if>
+			<if test="params.endDate != null and params.endDate != ''">
+				<![CDATA[and tet.date < DATE_ADD('${params.endDate}',INTERVAL 1 DAY)]]>
+		    </if>
+		<![CDATA[
+		group by tet.account, tet.task
+	) tet1 on tet1.task = t.id and tet1.account = if(t.finishedBy is not null and t.finishedBy <> '', t.finishedBy, t.assignedTo)
+	left JOIN zt_user u on u.account = if(t.finishedBy is not null and t.finishedBy <> '', t.finishedBy, t.assignedTo)
+	left join zt_dept dept on dept.id = u.dept
+	left join zt_dept dept1 on dept1.id = dept.parent
+	where 1=1
+		]]>
+		<if test="params.username != null and params.username != ''">
+		<![CDATA[and u.account = '${params.username}']]>
+	    </if>
+		<if test="params.deptId != null and params.deptId != ''">
+		<![CDATA[and u.dept = '${params.deptId}']]>
+	    </if>
+		<if test="params.deptName != null and params.deptName != ''">
+			<![CDATA[and dept1.`name` like '${params.deptName}%']]>
+	    </if>
+		<if test="params.groupName != null and params.groupName != ''">
+			<![CDATA[and dept.`name` like '${params.groupName}%']]>
+	    </if>
+		<if test="params.staffName != null and params.staffName != ''">
+			<![CDATA[and u.realname like '${params.staffName}%']]>
+	    </if>
+		<![CDATA[
+	and t.deleted = '0'
+	and t.status in ('wait','doing')
+	ORDER BY dept1.id, dept.id, u.id
+	]]>
+    </select>
     
     
  	<!-- 任务统计 -->

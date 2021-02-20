@@ -1,21 +1,11 @@
 package com.ruoyi.business.service.impl;
 
 import java.io.*;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.ZipUtil;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.metadata.fill.FillConfig;
-import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysDept;
@@ -28,7 +18,6 @@ import com.ruoyi.system.service.ISysPostService;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import com.ruoyi.common.utils.DateUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -38,12 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.utils.ShiroUtils;
 import com.ruoyi.business.mapper.JournalMapper;
-import com.ruoyi.business.domain.Journal;
-import com.ruoyi.business.service.IJournalService;
+import com.ruoyi.common.business.entity.Journal;
+import com.ruoyi.common.business.service.IJournalService;
 import com.ruoyi.common.core.text.Convert;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 /**

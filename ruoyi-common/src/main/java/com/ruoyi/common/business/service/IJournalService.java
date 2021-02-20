@@ -1,8 +1,7 @@
-package com.ruoyi.business.service;
+package com.ruoyi.common.business.service;
 
-import java.io.IOException;
 import java.util.List;
-import com.ruoyi.business.domain.Journal;
+import com.ruoyi.common.business.entity.Journal;
 import com.ruoyi.common.core.domain.AjaxResult;
 
 import javax.servlet.http.HttpServletRequest;

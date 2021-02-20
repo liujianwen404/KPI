@@ -20,6 +20,8 @@ public interface ISysUserService
      */
     public List<SysUser> selectUserList(SysUser user);
 
+    public List<SysUser> selectUserListWithoutDataScope(SysUser user);
+
     /**
      * 根据条件分页查询已分配用户角色列表
      * 
@@ -207,4 +209,11 @@ public interface ISysUserService
     public int changeStatus(SysUser user);
 
     List<UserTreeVo> selectUserTree(SysUser sysUser);
+
+    /**
+     * 是否是部门负责人
+     * @param userId
+     * @return
+     */
+    boolean userIsDeptLeader(Long userId);
 }

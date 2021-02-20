@@ -1,7 +1,7 @@
 package com.ruoyi.business.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ruoyi.business.domain.Journal;
+import com.ruoyi.common.business.entity.Journal;
 import java.util.List;
 /**
  * 员工日报 数据层

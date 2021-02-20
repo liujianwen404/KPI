@@ -37,6 +37,10 @@ public interface SysDeptMapper
      */
     public List<SysDept> selectDeptList(SysDept dept);
 
+    public List<SysDept> selectDeptListWithoutDataScope();
+
+    public List<SysDept> selectDeptListWithoutDataScopeByCondition(SysDept dept);
+
     /**
      * 删除部门管理信息
      * 

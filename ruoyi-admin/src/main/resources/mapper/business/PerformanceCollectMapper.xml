@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.PerformanceCollectMapper">
+    
+    <resultMap type="com.ruoyi.common.business.entity.PerformanceCollect" id="PerformanceCollectResult">
+        <result property="id"    column="id"    />
+        <result property="date"    column="date"    />
+        <result property="jobSchedule"    column="job_schedule"    />
+        <result property="jobQuality"    column="job_quality"    />
+        <result property="jobPerformance"    column="job_performance"    />
+        <result property="productSatisfaction"    column="product_satisfaction"    />
+        <result property="assessTotal"    column="assess_total"    />
+        <result property="learningPromotion"    column="learning_promotion"    />
+        <result property="qualityAssurance"    column="quality_assurance"    />
+        <result property="patent"    column="patent"    />
+        <result property="efficiency"    column="efficiency"    />
+        <result property="encourageTotal"    column="encourage_total"    />
+        <result property="performanceGrade"    column="performance_grade"    />
+        <result property="performanceRate"    column="performance_rate"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="postId"    column="post_id"    />
+        <result property="postName"    column="post_name"    />
+        <result property="createId"    column="create_id"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateId"    column="update_id"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectPerformanceCollectVo">
+        SELECT
+            id,
+            date,
+            job_schedule,
+            job_quality,
+            job_performance,
+            product_satisfaction,
+            assess_total,
+            learning_promotion,
+            quality_assurance,
+            patent,
+            efficiency,
+            encourage_total,
+            performance_grade,
+            performance_rate,
+            user_id,
+            user_name,
+            dept_id,
+            dept_name,
+            post_id,
+            post_name,
+            create_id,
+            create_by,
+            create_time,
+            update_id,
+            update_by,
+            update_time,
+            del_flag,
+            remark
+        FROM
+            t_performance_collect
+    </sql>
+
+    <select id="selectPerformanceCollectList" parameterType="com.ruoyi.common.business.entity.PerformanceCollect" resultMap="PerformanceCollectResult">
+        <include refid="selectPerformanceCollectVo"/>
+        <where>  
+            <if test="date != null "> and date = #{date}</if>
+            <if test="jobSchedule != null "> and job_schedule = #{jobSchedule}</if>
+            <if test="jobQuality != null "> and job_quality = #{jobQuality}</if>
+            <if test="jobPerformance != null "> and job_performance = #{jobPerformance}</if>
+            <if test="productSatisfaction != null  and productSatisfaction != ''"> and product_satisfaction = #{productSatisfaction}</if>
+            <if test="assessTotal != null "> and assess_total = #{assessTotal}</if>
+            <if test="learningPromotion != null "> and learning_promotion = #{learningPromotion}</if>
+            <if test="qualityAssurance != null "> and quality_assurance = #{qualityAssurance}</if>
+            <if test="patent != null "> and patent = #{patent}</if>
+            <if test="efficiency != null "> and efficiency = #{efficiency}</if>
+            <if test="encourageTotal != null "> and encourage_total = #{encourageTotal}</if>
+            <if test="performanceGrade != null "> and performance_grade = #{performanceGrade}</if>
+            <if test="performanceRate != null "> and performance_rate = #{performanceRate}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="deptName != null  and deptName != ''"> and dept_name like concat('%', #{deptName}, '%')</if>
+            <if test="postId != null "> and post_id = #{postId}</if>
+            <if test="postName != null  and postName != ''"> and post_name like concat('%', #{postName}, '%')</if>
+            <if test="createId != null "> and create_id = #{createId}</if>
+            <if test="updateId != null "> and update_id = #{updateId}</if>
+        </where>
+    </select>
+    
+    <select id="selectPerformanceCollectById" parameterType="Long" resultMap="PerformanceCollectResult">
+        <include refid="selectPerformanceCollectVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPreMonth" resultType="int">
+        <![CDATA[
+            select count(*) from t_performance_collect
+            where user_id = #{userId} and date_format(date,'%Y-%m') = date_format(#{preMonth},'%Y-%m') and del_flag = '0'
+        ]]>
+    </select>
+
+    <insert id="insertPerformanceCollect" parameterType="com.ruoyi.common.business.entity.PerformanceCollect" useGeneratedKeys="true" keyProperty="id">
+        insert into t_performance_collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="date != null">date,</if>
+            <if test="jobSchedule != null">job_schedule,</if>
+            <if test="jobQuality != null">job_quality,</if>
+            <if test="jobPerformance != null">job_performance,</if>
+            <if test="productSatisfaction != null">product_satisfaction,</if>
+            <if test="assessTotal != null">assess_total,</if>
+            <if test="learningPromotion != null">learning_promotion,</if>
+            <if test="qualityAssurance != null">quality_assurance,</if>
+            <if test="patent != null">patent,</if>
+            <if test="efficiency != null">efficiency,</if>
+            <if test="encourageTotal != null">encourage_total,</if>
+            <if test="performanceGrade != null">performance_grade,</if>
+            <if test="performanceRate != null">performance_rate,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="postId != null">post_id,</if>
+            <if test="postName != null">post_name,</if>
+            <if test="createId != null">create_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateId != null">update_id,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="date != null">#{date},</if>
+            <if test="jobSchedule != null">#{jobSchedule},</if>
+            <if test="jobQuality != null">#{jobQuality},</if>
+            <if test="jobPerformance != null">#{jobPerformance},</if>
+            <if test="productSatisfaction != null">#{productSatisfaction},</if>
+            <if test="assessTotal != null">#{assessTotal},</if>
+            <if test="learningPromotion != null">#{learningPromotion},</if>
+            <if test="qualityAssurance != null">#{qualityAssurance},</if>
+            <if test="patent != null">#{patent},</if>
+            <if test="efficiency != null">#{efficiency},</if>
+            <if test="encourageTotal != null">#{encourageTotal},</if>
+            <if test="performanceGrade != null">#{performanceGrade},</if>
+            <if test="performanceRate != null">#{performanceRate},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="postId != null">#{postId},</if>
+            <if test="postName != null">#{postName},</if>
+            <if test="createId != null">#{createId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateId != null">#{updateId},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePerformanceCollect" parameterType="com.ruoyi.common.business.entity.PerformanceCollect">
+        update t_performance_collect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="date != null">date = #{date},</if>
+            <if test="jobSchedule != null">job_schedule = #{jobSchedule},</if>
+            <if test="jobQuality != null">job_quality = #{jobQuality},</if>
+            <if test="jobPerformance != null">job_performance = #{jobPerformance},</if>
+            <if test="productSatisfaction != null">product_satisfaction = #{productSatisfaction},</if>
+            <if test="assessTotal != null">assess_total = #{assessTotal},</if>
+            <if test="learningPromotion != null">learning_promotion = #{learningPromotion},</if>
+            <if test="qualityAssurance != null">quality_assurance = #{qualityAssurance},</if>
+            <if test="patent != null">patent = #{patent},</if>
+            <if test="efficiency != null">efficiency = #{efficiency},</if>
+            <if test="encourageTotal != null">encourage_total = #{encourageTotal},</if>
+            <if test="performanceGrade != null">performance_grade = #{performanceGrade},</if>
+            <if test="performanceRate != null">performance_rate = #{performanceRate},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="postId != null">post_id = #{postId},</if>
+            <if test="postName != null">post_name = #{postName},</if>
+            <if test="createId != null">create_id = #{createId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateId != null">update_id = #{updateId},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePerformanceCollectById" parameterType="Long">
+        delete from t_performance_collect where id = #{id}
+    </delete>
+
+    <delete id="deletePerformanceCollectByIds" parameterType="String">
+        delete from t_performance_collect where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -7,7 +7,6 @@
 *.iml
 target
 out
-gen
 .settings
 .project
 .classpath

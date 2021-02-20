@@ -68,6 +68,11 @@ public class ZentaoServiceImpl implements IZentaoService {
 	}
 
 	@Override
+	public List<Map> userRequirementList(Map<String, String> map) {
+		return zentaoMapper.userRequirementList(map);
+	}
+
+	@Override
 	public List<ZentaoDept> deptList() {
 		return zentaoMapper.deptList();
 	}

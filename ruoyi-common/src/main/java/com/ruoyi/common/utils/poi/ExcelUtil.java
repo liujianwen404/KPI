@@ -931,7 +931,7 @@ public class ExcelUtil<T>
      * 
      * @param filename 文件名称
      */
-    public String getAbsoluteFile(String filename)
+    public static String getAbsoluteFile(String filename)
     {
         String downloadPath = RuoYiConfig.getDownloadPath() + filename;
         File desc = new File(downloadPath);

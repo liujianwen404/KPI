@@ -20,6 +20,10 @@ public interface ISysDeptService
      */
     public List<SysDept> selectDeptList(SysDept dept);
 
+    public List<SysDept> selectDeptListWithoutDataScope();
+
+    public List<SysDept> selectDeptListWithoutDataScopeByCondition(SysDept dept);
+
     /**
      * 查询部门管理树
      * 

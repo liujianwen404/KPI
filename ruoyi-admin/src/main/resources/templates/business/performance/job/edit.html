@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改个人工作现考核')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-job-edit" th:object="${performanceJob}">
+            <input name="id" th:field="*{id}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">代码规范（3分）：</label>
+                <div class="col-sm-8">
+                    <input name="infoCodeStandards" th:field="*{infoCodeStandards}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">沟通协调（3分）：</label>
+                <div class="col-sm-8">
+                    <input name="infoCoordination" th:field="*{infoCoordination}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">责任感（4分）：</label>
+                <div class="col-sm-8">
+                    <input name="infoResponsibility" th:field="*{infoResponsibility}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">意见建议：</label>
+                <div class="col-sm-8">
+                    <input name="opinion" th:field="*{opinion}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">自我评分：</label>
+                <div class="col-sm-8">
+                    <input name="superiorGrade" th:field="*{infoGrade}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">代码规范（3分/上级）：</label>
+                <div class="col-sm-8">
+                    <input name="superiorCodeStandards" th:field="*{superiorCodeStandards}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">沟通协调（3分/上级）：</label>
+                <div class="col-sm-8">
+                    <input name="superiorCoordination" th:field="*{superiorCoordination}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">责任感（4分/上级）：</label>
+                <div class="col-sm-8">
+                    <input name="superiorResponsibility" th:field="*{superiorResponsibility}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">上级评分：</label>
+                <div class="col-sm-8">
+                    <input name="superiorGrade" th:field="*{superiorGrade}" class="form-control" type="number">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">说明：</label>
+                <div class="col-sm-8">
+                    <input name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:inline="javascript">
+        var isDeptLeader = [[${isDeptLeader}]];
+        var userId = [[${userId}]];
+        var performanceJob = [[${performanceJob}]];
+        $(function () {
+            if (!isDeptLeader) {
+                $("input[name=superiorCodeStandards]").attr("readonly",true);
+                $("input[name=superiorCoordination]").attr("readonly",true);
+                $("input[name=superiorResponsibility]").attr("readonly",true);
+                $("input[name=superiorGrade]").attr("readonly",true);
+                $("input[name=remark]").attr("readonly",true);
+            }
+            if (userId != performanceJob.userId) {
+                //如果不是该数据的所有者，也就是上级领导或者管理人，只能编辑上级评分那部分
+                $("input[name=infoCodeStandards]").attr("readonly",true);
+                $("input[name=infoCoordination]").attr("readonly",true);
+                $("input[name=infoResponsibility]").attr("readonly",true);
+                $("input[name=infoGrade]").attr("readonly",true);
+                $("input[name=opinion]").attr("readonly",true);
+            }
+        })
+
+        var prefix = ctx + "business/performance/job";
+        $("#form-job-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-job-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

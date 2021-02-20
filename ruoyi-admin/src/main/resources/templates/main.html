@@ -117,11 +117,13 @@
 					var obj = {};
 					obj.title = v.taskId + ':' + v.taskName;
 					obj.start = v.openedDate;
-					obj.end = v.deadline;
+					obj.end = dateAddDays(v.deadline,1);//获取的截止日期要+1天，才能把截止日期那天的进度在日历插件中囊括到
 					obj.id = v.taskId;
 					data.push(obj)
 				});
 				successCallback(data);
+				console.log(data)
+
 			} else {
 				$.modal.alertError(result.msg);
 			}
@@ -151,6 +153,18 @@
 		var date = d.getDate();
 		datetime = year + '-' + (month > 9?(month + "") : ("0" + month))+ '-' + (date>9?(date + "") : ("0" + date));
 		return datetime;
+	}
+
+
+	//日期加天数的方法
+	//dataStr日期字符串
+	//dayCount 要增加的天数
+	//return 增加n天后的日期字符串
+	function dateAddDays(dataStr,dayCount) {
+		var strdate=dataStr; //日期字符串
+		var isdate = new Date(strdate.replace(/-/g,"/"));  //把日期字符串转换成日期格式
+		isdate = new Date((isdate/1000+(86400*dayCount))*1000);  //日期加1天
+		return dateFormat(isdate);
 	}
 
 </script>

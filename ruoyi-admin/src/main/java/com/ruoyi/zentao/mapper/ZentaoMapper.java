@@ -55,5 +55,7 @@ public interface ZentaoMapper {
 
 	List<Map> userTaskList(@Param("params") Map<String, String> map);
 
+	List<Map> userRequirementList(@Param("params") Map<String, String> map);
+
     List<ZentaoDept> deptList();
 }

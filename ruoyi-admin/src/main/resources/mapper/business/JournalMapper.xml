@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.business.mapper.JournalMapper">
-    <resultMap type="com.ruoyi.business.domain.Journal" id="JournalResult">
+    <resultMap type="com.ruoyi.common.business.entity.Journal" id="JournalResult">
         <id property="id" column="id"/>
             <result property="date" column="date"/>
             <result property="zentaoId" column="zentao_id"/>
@@ -44,7 +44,7 @@
             entity.remark
         </sql>
 
-    <select id="selectJournalList" parameterType="com.ruoyi.business.domain.Journal" resultMap="JournalResult">
+    <select id="selectJournalList" parameterType="com.ruoyi.common.business.entity.Journal" resultMap="JournalResult">
         select <include refid="baseColumns"/> from t_business_journal entity
         where  entity.del_flag = '0'
             <if test="params.beginDate != null and params.beginDate != ''">

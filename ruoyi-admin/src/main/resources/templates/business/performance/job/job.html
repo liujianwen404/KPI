@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('个人工作现考核列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>员工姓名：</label>
+                                <input type="text" name="userName"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" >
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" >
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" >
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" >
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('admin:job:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('admin:job:remove')}]];
+        var prefix = ctx + "business/performance/job";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "个人工作现考核",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '主键ID',
+                    visible: false
+                },
+                {
+                    field: 'date',
+                    title: '日期',
+                    visible: false
+                },
+                {
+                    field: 'userId',
+                    title: '员工id',
+                    visible: false
+                },
+                {
+                    field: 'userName',
+                    title: '员工姓名'
+                },
+                {
+                    field: 'deptId',
+                    title: '部门id',
+                    visible: false
+                },
+                {
+                    field: 'deptName',
+                    title: '部门名称'
+                },
+                {
+                    field: 'postId',
+                    title: '岗位id',
+                    visible: false
+                },
+                {
+                    field: 'postName',
+                    title: '岗位名称',
+                    visible: false
+                },
+                {
+                    field: 'infoCodeStandards',
+                    title: '代码规范（3分）'
+                },
+                {
+                    field: 'infoCoordination',
+                    title: '沟通协调（3分）'
+                },
+                {
+                    field: 'infoResponsibility',
+                    title: '责任感（4分）'
+                },
+                {
+                    field: 'opinion',
+                    title: '意见建议'
+                },
+                {
+                    field: 'infoGrade',
+                    title: '自我评分'
+                },
+                {
+                    field: 'superiorCodeStandards',
+                    title: '代码规范（3分/上级）'
+                },
+                {
+                    field: 'superiorCoordination',
+                    title: '沟通协调（3分/上级）'
+                },
+                {
+                    field: 'superiorResponsibility',
+                    title: '责任感（4分/上级）'
+                },
+                {
+                    field: 'superiorGrade',
+                    title: '上级评分'
+                },
+                {
+                    field: 'createId',
+                    title: '创建者id',
+                    visible: false
+                },
+                {
+                    field: 'updateId',
+                    title: '更新者id',
+                    visible: false
+                },
+                {
+                    field: 'remark',
+                    title: '说明'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs " href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
